@@ -1,0 +1,5 @@
+title = Nihilist QA
+description = "Ask The Nhilist a quesion."
+backdrop = 1.x
+version = 1.x-1.0.0
+type = module

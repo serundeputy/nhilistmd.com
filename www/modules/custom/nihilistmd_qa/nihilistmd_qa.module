@@ -1,0 +1,70 @@
+<?php
+/**
+ * @file nhilist_qa.module
+ *  Provides QA form ... you know for the joke.
+ */
+
+/**
+ *  Implements hook_menu()
+ */
+function nihilistmd_qa_menu() {
+  $items = array();
+  $items['qa'] = array(
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('nihilistmd_qa_form'),
+    'access callback' => TRUE,
+  );
+  $items['qa/answer'] = array(
+    'page callback' => 'nihilistmd_qa_answer',
+    //'page arguments' => array($form_state),
+    //'access callback' = TRUE,
+  );
+  return $items;
+}
+
+/**
+ * Page callback for /qa
+ */
+function nihilistmd_qa_form($form, &$form_state) {
+  $form = array();
+  if (isset($form_state['storage'], $form_state['storage']['question'], $form_state['storage']['answer'])) {
+     // The form has been submitted, so we display the submitted
+     // value to the user:
+     $form['question_display'] = array(
+      '#markup' => t(
+        '<strong>Q:</strong> ' . $form_state['storage']['question'] . '<br /><br />' .
+        '<strong>A:</strong>' . ' The Nihilist says: @value', array('@value' => $form_state['storage']['answer'])
+      ),
+      '#prefix' => '<p class="nihilist-answers">',
+      '#suffix' => '</p>',
+     );
+ }
+  $form['question'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Question The Nihilist',
+    '#description' => t('Type in your medical emergency for The Nihilist.'),
+    '#default_value' => t('Enter your question.'),
+  );
+  $form['actions'] = array(
+    '#type' => 'actions',
+  );
+  $form['actions']['submit_button'] = array(
+    '#type' => 'submit',
+    '#value' => t('Ask!'),
+  );
+  $form['#attached']['css'] = array(
+    backdrop_get_path('module', 'nihilistmd_qa') . '/css/nihilistmd_qa.css',
+  );
+  return $form;
+}
+
+/**
+ * Submit handler for nihilistmd_qa_form().
+ */
+function nihilistmd_qa_form_submit($form, &$form_state) {
+  dpm(backdrop_get_path('module', 'nihilistmd_qa'));
+  $form_state['storage']['question'] = $form_state['values']['question'];
+  $form_state['storage']['answer'] = 'You are going to die.';
+  $form['question']['#default_value'] = $form_state['values']['question'];
+  $form_state['rebuild'] = TRUE;
+}
